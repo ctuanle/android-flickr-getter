@@ -24,6 +24,7 @@ public class CardViewHolder {
     private TextView cardTitle;
     private ImageView icon;
     private PostItem postItem;
+    private Boolean isSaved = false;
 
     public CardViewHolder(GridLayout grid, JSONObject detail) {
         // Build the card
@@ -39,7 +40,7 @@ public class CardViewHolder {
 
         // Load its contents
         try {
-            this.loadImage(grid, detail.getJSONObject("media").getString("m"));
+            this.loadImage(detail.getJSONObject("media").getString("m"));
             this.loadCardTitle(detail.getString("title"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -62,22 +63,18 @@ public class CardViewHolder {
         this.icon = this.cardView.findViewById(R.id.card_icon);
         this.postItem = postItem;
 
-        this.loadImage(grid, postItem.media);
+        this.loadImage(postItem.media);
         this.loadCardTitle(postItem.title);
 
-        /*this.setImageViewOnClickListener();
-        this.setIconOnClickListener();*/
+        // this.setImageViewOnClickListener();
+        // this.setIconOnClickListener();
+        this.isSaved = true;
+        icon.setImageResource(R.drawable.ic_baseline_favorite_24);
         this.setSavedPostIconOnClickListener();
     }
 
-    private void loadImage(GridLayout grid, String url) {
-        int size = (int) (grid.getWidth() * 0.45);
-
-        /*Glide.with(grid.getContext())
-                .load(url)
-                .into(this.imageView);*/
+    private void loadImage(String url) {
         new LoadImageFromUrl(this.imageView).execute(url);
-
     }
 
     private void loadCardTitle(String title) {
@@ -94,7 +91,7 @@ public class CardViewHolder {
         this.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("ImageView Clicked");
+                System.out.println("ImageView Clicked. Have nothing to do for now");
             }
         });
     }
@@ -103,13 +100,21 @@ public class CardViewHolder {
         this.icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Icon Clicked");
                 try {
                     PostItem post = new PostItem();
                     post.title = detail.getString("title");
                     post.media = detail.getJSONObject("media").getString("m");
 
-                    DBSQlite.getInstance(cardView.getContext()).insertPost(post);
+                    if (isSaved) {
+                        DBSQlite.getInstance(cardView.getContext()).deletePost(post);
+                        isSaved = !isSaved;
+                        icon.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                    } else {
+                        DBSQlite.getInstance(cardView.getContext()).insertPost(post);
+                        isSaved = !isSaved;
+                        icon.setImageResource(R.drawable.ic_baseline_favorite_24);
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -121,11 +126,18 @@ public class CardViewHolder {
         this.icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("SavedPostIcon Clicked");
                 PostItem post = new PostItem();
                 post.title = postItem.title;
                 post.media = postItem.media;
-                DBSQlite.getInstance(cardView.getContext()).deletePost(post);
+                if (isSaved) {
+                    DBSQlite.getInstance(cardView.getContext()).deletePost(post);
+                    isSaved = !isSaved;
+                    icon.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                } else {
+                    DBSQlite.getInstance(cardView.getContext()).insertPost(post);
+                    isSaved = !isSaved;
+                    icon.setImageResource(R.drawable.ic_baseline_favorite_24);
+                }
             }
         });
     }
@@ -134,7 +146,7 @@ public class CardViewHolder {
         this.cardTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Title Clicked");
+                System.out.println("Title Clicked! Just this log.");
             }
         });
     }

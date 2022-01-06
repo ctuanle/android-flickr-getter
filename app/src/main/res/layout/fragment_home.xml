@@ -18,7 +18,9 @@
             android:layout_height="50dp"
             android:padding="5dp"
             android:layout_margin="2dp"
-            android:queryHint="Tags"/>
+            android:queryHint="Tags">
+
+        </SearchView>
 
         <ScrollView
             android:id="@+id/card_scroll"
@@ -30,6 +32,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
+
+                    <androidx.gridlayout.widget.GridLayout
+                        android:id="@+id/gridKeywords"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="25dp"
+                        app:columnCount="10"
+                        app:rowCount="1">
+
+                    </androidx.gridlayout.widget.GridLayout>
+                </HorizontalScrollView>
 
                 <androidx.gridlayout.widget.GridLayout
                     android:id="@+id/gridImages"

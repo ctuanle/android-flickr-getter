@@ -21,11 +21,16 @@ public class DBSQlite extends SQLiteOpenHelper {
 
     // Table name
     private static final String TABLE_POSTS = "posts";
+    private static final String TABLE_RECENT = "recents";
 
-    // Table info
+    // Table posts info
     private static final String KEY_POST_ID = "id";
     private static final String KEY_POST_TITLE = "title";
     private static final String KEY_POST_MEDIA = "media";
+
+    // Table recents info
+    private static final String KEY_RECENT_ID = "id";
+    private static final String KEY_RECENT_KEYWORD = "keyword";
 
     private static DBSQlite sInstance;
 
@@ -48,7 +53,15 @@ public class DBSQlite extends SQLiteOpenHelper {
                 KEY_POST_TITLE + " TEXT" + "," +
                 KEY_POST_MEDIA + " TEXT" +
                 ")";
+
+        String CREATE_RECENT_TABLE = "CREATE TABLE " + TABLE_RECENT +
+                "(" +
+                KEY_RECENT_ID + " INTEGER PRIMARY KEY," + // Define a primary key
+                KEY_RECENT_KEYWORD + " TEXT" +
+                ")" ;
+
         db.execSQL(CREATE_POSTS_TABLE);
+        db.execSQL(CREATE_RECENT_TABLE);
     }
 
     @Override
@@ -56,6 +69,7 @@ public class DBSQlite extends SQLiteOpenHelper {
         if (oldVersion != newVersion) {
             // Simplest implementation is to drop all old tables and recreate them
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_POSTS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECENT);
             onCreate(db);
         }
     }
@@ -80,7 +94,7 @@ public class DBSQlite extends SQLiteOpenHelper {
     public List<PostItem> getAllPostItems() {
         List<PostItem> posts = new ArrayList<>();
 
-        String POSTS_SELECT_QUERY = String.format("SELECT * FROM %s ", TABLE_POSTS);
+        String POSTS_SELECT_QUERY = String.format("SELECT DISTINCT %s, %s FROM %s ", KEY_POST_MEDIA, KEY_POST_TITLE, TABLE_POSTS);
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(POSTS_SELECT_QUERY, null);
@@ -129,5 +143,69 @@ public class DBSQlite extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    public void insertKeyword(String keyword) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(KEY_RECENT_KEYWORD, keyword);
+            db.insertOrThrow(TABLE_RECENT, null, values);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to add post to database");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    @SuppressLint("Range")
+    public String getLastKeyword () {
+        String keyword = "cats";
+
+        String RECENT_SELECT_QUERY = String.format("SELECT %s FROM %s ORDER BY %s DESC LIMIT 1", KEY_RECENT_KEYWORD, TABLE_RECENT, KEY_RECENT_ID);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(RECENT_SELECT_QUERY, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    keyword = cursor.getString(cursor.getColumnIndex(KEY_RECENT_KEYWORD));
+                } while(cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get posts from database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return keyword;
+    }
+
+    @SuppressLint("Range")
+    public List<String> get10LastKeywords() {
+        List<String> keywords = new ArrayList<>();
+
+        String KEYWORDS_SELECT_QUERY = String.format("SELECT DISTINCT %s FROM %s ORDER BY %s DESC LIMIT 10", KEY_RECENT_KEYWORD, TABLE_RECENT, KEY_RECENT_ID);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(KEYWORDS_SELECT_QUERY, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    String keyword = cursor.getString(cursor.getColumnIndex(KEY_RECENT_KEYWORD));
+                    keywords.add(keyword);
+                } while(cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get posts from database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return keywords;
     }
 }

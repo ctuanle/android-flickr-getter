@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:scaleType="centerCrop"
+    android:layout_margin="2.5dp"
+    android:id="@+id/image_container"
+    android:adjustViewBounds="true"
+    android:minWidth="500dp"
+    android:minHeight="500dp"
+    >
+</ImageView>

@@ -3,11 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/drawable/border.xml" value="0.2375" />
+        <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/drawable/ic_baseline_border_outer_24.xml" value="0.2375" />
         <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.2375" />
         <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/layout/activity_main.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/layout/card_container.xml" value="0.1078125" />
         <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/layout/fragment_favorite.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/layout/fragment_home.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/layout/image_item_container.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/layout/keyword.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/cole/Documents/Android/TP/projetfinal/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1078125" />
       </map>
     </option>
